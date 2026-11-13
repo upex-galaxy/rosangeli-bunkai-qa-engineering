@@ -89,6 +89,8 @@ Who authors: a human QA architect / lead directly, **or** an AI workflow that de
 | [ADR-0024](./ADR-0024-agentic-work-profile-and-permission-posture.md) | Agentic work runs in three tiers with one profile in `orchestration:`; a launched session escalates to its launcher, and workers run in bypass | Accepted | — | — |
 | [ADR-0025](./ADR-0025-project-yaml-values-only-schema-documents.md) | `.agents/project.yaml` carries values only; `.agents/project.schema.yaml` is the documented template, its values synced down from the yaml | Accepted | — | — |
 | [ADR-0026](./ADR-0026-pi-as-a-declared-harness.md) | Pi joins `HARNESSES` under the same gates; its detection reads two files only, a secret-only block stands in for a deny list, and the session-naming claim of ADR-0024 is corrected | Accepted | — | — |
+| [ADR-0027](./ADR-0027-bunkai-auth-in-tests.md) | Bunkai tests authenticate with a pre-provisioned account through headless sign-in or a PAT | Accepted | — | — |
+| [ADR-0028](./ADR-0028-bunkai-selector-contract.md) | Bunkai UI tests locate elements by the app's existing `data-testid` convention | Accepted | — | — |
 
 > Keep this table in sync whenever an ADR is added or its status changes. It is the fast index every session reads first.
 
