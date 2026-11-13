@@ -362,9 +362,9 @@ environments:
     api_mcp: null # TODO: MCP server name for qa API (e.g. myproject-qa-api)
   staging:
     web_url: 'https://staging-upexbunkai.vercel.app' # Frontend URL for staging env (e.g. https://staging.myproject.com)
-    api_url: null # TODO: API base URL for staging env (e.g. https://api-staging.myproject.com)
-    db_mcp: null # TODO: MCP server name for staging DB (e.g. myproject-staging-db)
-    api_mcp: null # TODO: MCP server name for staging API (e.g. myproject-staging-api)
+    api_url: 'https://staging-upexbunkai.vercel.app/api/v1' # API base URL for staging env (e.g. https://api-staging.myproject.com)
+    db_mcp: dbhub # MCP server name for staging DB (e.g. myproject-staging-db)
+    api_mcp: openapi # MCP server name for staging API (e.g. myproject-staging-api)
   production:
     web_url: null # TODO: Frontend URL for production env (e.g. https://myproject.com)
     api_url: null # TODO: API base URL for production env (e.g. https://api.myproject.com)
