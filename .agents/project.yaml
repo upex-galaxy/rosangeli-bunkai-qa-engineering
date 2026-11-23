@@ -26,8 +26,8 @@ database:
   db_type: null # TODO: Database engine (e.g. PostgreSQL)
 
 issue_tracker:
-  issue_tracker: null # TODO: Issue tracking tool (e.g. Jira)
-  issue_tracker_cli: null # TODO: CLI command to query tickets (e.g. acli (Jira) / gh issue (GitHub))
+  issue_tracker: Jira # Issue tracking tool (e.g. Jira)
+  issue_tracker_cli: acli # CLI command to query tickets (e.g. acli (Jira) / gh issue (GitHub))
   # SOURCE OF TRUTH for the Atlassian instance. Every jira:sync-* script resolves the
   # host from HERE first and uses .env's ATLASSIAN_URL only as a fallback (see
   # cli/lib/atlassian-instance.ts). Inverse of project_key, on purpose: the host is
@@ -40,7 +40,7 @@ issue_tracker:
 
 testing:
   default_env: staging # Default testing environment — must match a key under `environments:` (e.g. staging)
-  tms_cli: null # TODO: Test management CLI command (e.g. bun xray)
+  tms_cli: bun xray # Test management CLI command (e.g. bun xray)
   # Which stage turns a test case into a `Test` work item in the TMS. One of:
   # auto | sprint-testing | test-documentation. `auto` (the shipped default) follows the
   # TMS modality resolved from `tms_cli`: jira-xray -> /sprint-testing Stage 1 (Xray's
