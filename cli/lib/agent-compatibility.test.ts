@@ -1545,6 +1545,15 @@ describe('project-declared MCP set', () => {
     expect(unwrapEnvLoader('bunx', [...LEGACY_CODEX_ENV_LOADER_ARGS]).envLoader).toBe(false);
   });
 
+  test('reads `bun x <pkg>` as `bunx -y <pkg>`: same launch, Windows-safe spelling', () => {
+    const canonical = { command: 'bunx', args: ['-y', 'pkg@1', '--flag'], envLoader: true, filter: ['A_X'] };
+    expect(unwrapEnvLoader('bunx', [...mcpEnvLoaderArgs(['A_X']), 'bun', 'x', 'pkg@1', '--flag'])).toEqual(canonical);
+    expect(unwrapEnvLoader('bunx', [...mcpEnvLoaderArgs(['A_X']), 'bun', 'x', '-y', 'pkg@1', '--flag'])).toEqual(canonical);
+    expect(unwrapEnvLoader('bun', ['x', 'pkg@1'])).toEqual({ command: 'bunx', args: ['-y', 'pkg@1'], envLoader: false, filter: null });
+    // Any other `bun` subcommand is a different launch and stays as written.
+    expect(unwrapEnvLoader('bun', ['run', 'server.ts'])).toEqual({ command: 'bun', args: ['run', 'server.ts'], envLoader: false, filter: null });
+  });
+
   test('a filter must list exact names: a glob cannot be compared across hosts', () => {
     expect(() => unwrapEnvLoader('bunx', [...mcpEnvLoaderArgs(['STRIPE_*']), 'bunx', 'pkg'])).toThrow('exact variable names');
   });
