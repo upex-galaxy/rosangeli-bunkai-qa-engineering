@@ -144,6 +144,24 @@ export interface UnwrappedLaunch {
  * is not a plain variable name, because a glob cannot be compared across hosts.
  */
 export function unwrapEnvLoader(command: string, args: readonly string[]): UnwrappedLaunch {
+  const launch = unwrapEnvLoaderRaw(command, args);
+  return { ...launch, ...canonicalBunx(launch.command, launch.args) };
+}
+
+/**
+ * `bun x [-y] <pkg> ...` and `bunx -y <pkg> ...` start the same server: `bunx`
+ * is Bun's alias of `bun x`, and Bun accepts and ignores `-y`. Both are read as
+ * `bunx -y <pkg> ...` so parity compares the launch, not its spelling. The
+ * `bun x` form exists because on Windows `bunx -y` behind the varlock loader
+ * prints Bun's help instead of starting the server.
+ */
+function canonicalBunx(command: string, args: readonly string[]): { command: string, args: string[] } {
+  if (command !== 'bun' || args[0] !== 'x') { return { command, args: [...args] }; }
+  const rest = args[1] === '-y' ? args.slice(2) : args.slice(1);
+  return { command: 'bunx', args: ['-y', ...rest] };
+}
+
+function unwrapEnvLoaderRaw(command: string, args: readonly string[]): UnwrappedLaunch {
   if (command !== MCP_ENV_LOADER_COMMAND) { return { command, args: [...args], envLoader: false, filter: null }; }
   const head = MCP_ENV_LOADER_HEAD;
   const filtered = args.length > head.length + 2
