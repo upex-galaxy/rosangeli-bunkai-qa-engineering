@@ -21,6 +21,9 @@
  *  - CRLF / LF detected and normalised to the file's existing style.
  *  - Within each section, user's existing key order preserved; new keys
  *    appended at end, sorted alphabetically among themselves.
+ *    Exception: a dependency section already in ascending key order (the
+ *    order package managers write and `jsonc/sort-keys` enforces) gets each
+ *    new key at its sorted position, so the sync never leaves it unsorted.
  *  - Sections not listed in the spec are passed through untouched.
  */
 
@@ -30,6 +33,7 @@ import type {
   PackageJsonSpec,
   SyncStateV7,
 } from './updater-types';
+import { spawnSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
@@ -116,6 +120,19 @@ export function getSection(data: Record<string, unknown>, section: string): Reco
  * file is missing or unparseable. State's `appliedKeys` is subtracted from
  * `upstreamOnlyKeys` so previously-applied keys never re-surface.
  */
+/**
+ * The section of upstream's package.json as it was at the last sync (the blob
+ * `lastSyncedSha` the lock recorded), read from the clone; null when the lock
+ * has none or the clone cannot produce that blob.
+ */
+function sectionAtLastSync(templateDir: string, sha: string | undefined, section: string): Record<string, string> | null {
+  if (!sha || !/^[0-9a-f]{7,64}$/i.test(sha)) { return null; }
+  const r = spawnSync('git', ['-C', templateDir, 'cat-file', '-p', sha], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  if (r.status !== 0) { return null; }
+  try { return getSection(JSON.parse(r.stdout) as Record<string, unknown>, section); }
+  catch { return null; }
+}
+
 export function detectPackageJsonDelta(
   spec: PackageJsonSpec,
   repoRoot: string,
@@ -156,6 +173,7 @@ export function detectPackageJsonDelta(
     const appliedKeys = state?.packageJsonSync?.[spec.path]?.[section]?.appliedKeys ?? [];
     const appliedSet = new Set(appliedKeys);
     const keptKeys = state?.packageJsonSync?.[spec.path]?.[section]?.keptKeys ?? {};
+    let cursorMap: Record<string, string> | null | undefined;
 
     const upstreamOnlyKeys: Record<string, string> = {};
     const localOverrideKeys: Record<string, { localValue: string, upstreamValue: string }> = {};
@@ -173,7 +191,9 @@ export function detectPackageJsonDelta(
         // Suppress keys the user already chose to keep ('mine') against this
         // exact upstream value. If upstream changed since, re-surface it.
         if (keptKeys[key] === upstreamValue) { continue; }
-        localOverrideKeys[key] = { localValue, upstreamValue };
+        cursorMap ??= sectionAtLastSync(templateDir, state?.packageJsonSync?.[spec.path]?.[section]?.lastSyncedSha, section);
+        const cursorValue = cursorMap?.[key];
+        localOverrideKeys[key] = { localValue, upstreamValue, ...(cursorValue !== undefined ? { cursorValue } : {}) };
       }
     }
 
@@ -198,6 +218,18 @@ export function detectPackageJsonDelta(
 // APPLY
 // ============================================================================
 
+const DEPENDENCY_SECTIONS = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies'];
+
+function staysAscending(section: string, existing: unknown): boolean {
+  if (!DEPENDENCY_SECTIONS.includes(section) || existing === null || typeof existing !== 'object') { return false; }
+  const keys = Object.keys(existing);
+  return keys.every((key, i) => i === 0 || keys[i - 1] <= key);
+}
+
+function sortedByKey(map: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.keys(map).sort().map(key => [key, map[key]]));
+}
+
 /**
  * Append selected keys to the local package.json under the configured sections.
  *
@@ -210,6 +242,8 @@ export function detectPackageJsonDelta(
  *   - User's existing keys in each section keep their original order.
  *   - New keys appended AT THE END of the section, sorted alphabetically among
  *     themselves only (no global re-sort).
+ *   - Except a dependency section whose keys are already ascending: the new
+ *     keys land at their sorted position (existing keys never move).
  *   - Sections absent in local are created at the end of the JSON object.
  *
  * Idempotency:
@@ -266,7 +300,7 @@ export function applyPackageJsonAppend(
     }
 
     if (writtenForSection.length > 0) {
-      parsed.data[section] = localMap;
+      parsed.data[section] = staysAscending(section, existingSection) ? sortedByKey(localMap) : localMap;
       written[section] = writtenForSection;
       changed = true;
     }

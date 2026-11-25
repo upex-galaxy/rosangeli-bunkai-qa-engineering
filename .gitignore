@@ -13,6 +13,7 @@ node_modules/
 /playwright/.auth/
 .playwright/user-data
 .playwright/output
+.playwright/.playwright/
 # Safety net only: no skill writes a browser profile here (tickets and workers run
 # in memory; owner profiles live in ~/.agentic-qa/playwright-profiles/). It keeps a
 # profile left by an old habit or a relative --profile out of git. `storage-state-*.json`

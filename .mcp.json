@@ -1,12 +1,13 @@
 {
   "mcpServers": {
     "context7": {
-      "command": "bunx",
-      "args": ["-y", "@upstash/context7-mcp@4.0.3"]
+      "command": "bun",
+      "args": ["x", "-y", "@upstash/context7-mcp@4.0.3"]
     },
     "slack-aurora": {
-      "command": "bunx",
+      "command": "bun",
       "args": [
+        "x",
         "-p",
         "varlock@1.20.0",
         "varlock",
@@ -19,6 +20,7 @@
         "--",
         "bun",
         "x",
+        "-y",
         "slack-mcp-server@latest",
         "--transport",
         "stdio"
@@ -28,8 +30,9 @@
       }
     },
     "dbhub": {
-      "command": "bunx",
+      "command": "bun",
       "args": [
+        "x",
         "-p",
         "varlock@1.20.0",
         "varlock",
@@ -42,14 +45,16 @@
         "--",
         "bun",
         "x",
+        "-y",
         "@bytebase/dbhub@1.2.1",
         "--config",
         "dbhub.toml"
       ]
     },
     "openapi": {
-      "command": "bunx",
+      "command": "bun",
       "args": [
+        "x",
         "-p",
         "varlock@1.20.0",
         "varlock",
@@ -62,6 +67,7 @@
         "--",
         "bun",
         "x",
+        "-y",
         "@ivotoby/openapi-mcp-server@1.16.1",
         "--tools",
         "dynamic"
