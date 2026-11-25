@@ -64,32 +64,32 @@ import type { ApiLoginContext, ExtractedToken } from './lib/api-login-core';
 export const environments = ['local', 'staging'] as const;
 
 /**
- * Build the request body for the auth endpoint.
- * Override for different auth formats (e.g. `{ username, password }`, OAuth2).
+ * Bunkai headless sign-in: POST /api/v1/auth/signin returns `{ user, session, pat }`.
+ * The API's bearerAuth scheme is the personal access token (`pat.token`), so that
+ * is the token stored; each call mints a 1-day PAT.
  */
+export const loginEndpoint = '/auth/signin';
+
+const PAT_LIFETIME_DAYS = 1;
+
 export function buildAuthPayload(
   email: string,
   password: string,
   _context: ApiLoginContext,
 ): Record<string, unknown> {
-  return { email, password };
+  return { email, password, pat_name: 'qa-api-login', pat_expires_in_days: PAT_LIFETIME_DAYS };
 }
 
-/**
- * Extract the token fields from the auth response.
- * Override if your API returns tokens in a different shape.
- *
- * Expected response format (default):
- *   { access_token: string, token_type: string, expires_in: number, refresh_token?: string }
- */
 export function extractTokenFromResponse(
   body: Record<string, unknown>,
   _context: ApiLoginContext,
 ): ExtractedToken {
+  const pat = (body.pat ?? {}) as Record<string, unknown>;
+  const session = (body.session ?? {}) as Record<string, unknown>;
   return {
-    accessToken: String(body.access_token ?? ''),
-    tokenType: String(body.token_type ?? 'Bearer'),
-    expiresIn: Number(body.expires_in ?? 86400),
-    refreshToken: body.refresh_token ? String(body.refresh_token) : null,
+    accessToken: String(pat.token ?? ''),
+    tokenType: 'Bearer',
+    expiresIn: PAT_LIFETIME_DAYS * 86400,
+    refreshToken: session.refresh_token ? String(session.refresh_token) : null,
   };
 }
