@@ -106,10 +106,10 @@ qa:
       key: null # discovered/created at runtime, then cached here (e.g. PROJ-456)
     test_artifacts_epic:
       name: QA Test Artifacts # holds every Test Execution (STR/ATR and the per-verdict RTR), Precondition, Test Set
-      key: null # discovered/created at runtime, then cached here (e.g. PROJ-789)
+      key: BK-515 # discovered/created at runtime, then cached here (e.g. PROJ-789)
     defect_epic:
       name: QA Defect Management # convention name; the `QA ` prefix marks a process epic, not product
-      key: null # discovered/created at runtime, then cached here (e.g. PROJ-123)
+      key: BK-183 # discovered/created at runtime, then cached here (e.g. PROJ-123)
   # How THIS project runs the IQL. Read by the shipped `iql-context` skill (the methodology
   # index) and, through it, by every workflow skill that asks "which stages does this project
   # run and how strict are its gates". The skill body syncs verbatim from upstream; these
@@ -315,7 +315,7 @@ orchestration:
 # ignored. Empty by default. Read directly by the updater (not a {{VAR}} source): the
 # nested list is skipped by vars:check like git_strategy and qa.qa_epics.
 updater:
-  protected_paths: [cli/lib/agent-compatibility-contracts.ts] # local fix: `bun x` == `bunx -y` MCP parity (Windows); drop once upstream ships it. e.g. [scripts/lint-vars.ts, .agents/skills/acli/SKILL.md]
+  protected_paths: [] # e.g. [scripts/lint-vars.ts, .agents/skills/acli/SKILL.md]
   # Upstream deny rules this project does NOT want appended to `.claude/settings.json`.
   # `bun sync` appends every upstream `permissions.deny` entry the project lacks (after a
   # backup; nothing removed or reordered); an entry listed here, by its exact text, is left
@@ -332,6 +332,19 @@ updater:
   # Not a list of strings = ignored with a warning (fails toward MORE hooks). Read directly
   # by the updater (`readDeclinedHooks` in cli/lib/updater-settings.ts), skipped by vars:check.
   declined_hooks: [] # e.g. ['node "$CLAUDE_PROJECT_DIR/.agents/hooks/doc-contracts.mjs"']
+
+checks:
+  mcp_parity:
+    mode: strict
+    relay: {}
+    unrelayed: {}
+  hooks:
+    scope: full
+  vars_check:
+    skip_paths: []
+  docs_check:
+    include: []
+    exclude: []
 
 # Where SECRET values come from. `local` (the default) = .env / .env.local.
 # A secret manager is the ADVANCED option (ADR-0010): `bun setup` writes the
