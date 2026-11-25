@@ -117,7 +117,11 @@
     "xray": "bun cli/xray/index.ts",
     "xray:payload": "bun tests/utils/xrayResults.ts",
     "vars:schema": "bun scripts/env-schema.ts",
-    "vars:schema:check": "bun scripts/env-schema.ts --check"
+    "vars:schema:check": "bun scripts/env-schema.ts --check",
+    "clean": "bun scripts/clean.ts",
+    "issues:weekly-digest": "bun scripts/weekly-issue-digest.ts",
+    "lint:cached": "eslint --cache --cache-location node_modules/.cache/eslint/.eslintcache .",
+    "oxlint:check": "oxlint -c .oxlintrc.json"
   },
   "dependencies": {
     "@clack/prompts": "^1.8.1",
@@ -138,9 +142,11 @@
     "allure-js-commons": "^3.14.0",
     "allure-playwright": "^3.14.0",
     "eslint": "^9.39.5",
+    "eslint-plugin-playwright": "^2.12.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0",
     "openapi-typescript": "^7.13.0",
+    "oxlint": "1.94.0",
     "prettier": "^3.9.10",
     "typescript": "^5.8.3",
     "varlock": "1.20.0"

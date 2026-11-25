@@ -20,6 +20,8 @@
 
 import { chmodSync, readFileSync, writeFileSync } from 'node:fs';
 
+import { redactSecretText } from './redaction.ts';
+
 // ----------------------------------------------------------------------------
 // Event shapes
 // ----------------------------------------------------------------------------
@@ -193,7 +195,7 @@ export class Redactor {
     for (const v of this.values) {
       if (out.includes(v)) { out = out.split(v).join(MASK); }
     }
-    return out;
+    return redactSecretText(out);
   }
 
   /** Deep copy with every string redacted (object keys included). */
@@ -245,7 +247,7 @@ export class Journal {
   /** Append one event: stamped, redacted, then delivered to every listener. */
   append(ev: RunEvent): JournalEntry {
     this.seq += 1;
-    const entry = { ...this.redactor.deep(ev), seq: this.seq, ts: Math.max(0, this.now() - this.t0) } as JournalEntry;
+    const entry = { ...this.redactor.deep(ev), seq: this.seq, ts: Math.max(0, this.now() - this.t0) };
     this.entries.push(entry);
     for (const fn of this.listeners) {
       try { fn(entry); }
@@ -258,7 +260,7 @@ export class Journal {
   appendRecorded(entry: JournalEntry): JournalEntry {
     this.seq += 1;
     const { seq: _seq, ts, ...ev } = entry;
-    const out = { ...this.redactor.deep(ev as RunEvent), seq: this.seq, ts } as JournalEntry;
+    const out = { ...this.redactor.deep(ev), seq: this.seq, ts };
     this.entries.push(out);
     for (const fn of this.listeners) {
       try { fn(out); }

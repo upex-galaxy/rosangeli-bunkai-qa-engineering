@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 7,
+  "templateRepo": "upex-galaxy/agentic-qa-boilerplate",
+  "templateCommit": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+  "perComponentCommit": {
+    "skills": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "instructions": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "agent-compatibility": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "scripts": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "docs": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "cli": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "vscode": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "husky": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "agents-docs": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "tooling": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "config-core": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "tests-utils": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "env-template": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "env-schema": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "oxlint-config": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "pi-adapter": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "pi-config": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "codex-config": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "agent-root-config": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "worktree-include": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "orca-config": "ab10778751c36093a9e93803e80c4e43fc526dc3",
+    "playwright-cli-config": "ab10778751c36093a9e93803e80c4e43fc526dc3"
+  },
+  "syncedComponents": [],
+  "ignoreFileSync": {},
+  "packageJsonSync": {
+    "package.json": {
+      "scripts": {
+        "lastSyncedSha": "2749c72865bfb25f7cea234f06f5f95a1e83fd2f",
+        "appliedKeys": [
+          "clean",
+          "issues:weekly-digest",
+          "lint:cached",
+          "oxlint:check"
+        ]
+      },
+      "devDependencies": {
+        "lastSyncedSha": "2749c72865bfb25f7cea234f06f5f95a1e83fd2f",
+        "appliedKeys": [
+          "eslint-plugin-playwright",
+          "oxlint"
+        ]
+      },
+      "dependencies": {
+        "lastSyncedSha": "2749c72865bfb25f7cea234f06f5f95a1e83fd2f",
+        "appliedKeys": []
+      },
+      "lint-staged": {
+        "lastSyncedSha": "2749c72865bfb25f7cea234f06f5f95a1e83fd2f",
+        "appliedKeys": []
+      }
+    }
+  },
+  "cliVersion": "8.5",
+  "lastSyncedAt": "2026-11-23T19:58:49.718Z",
+  "variableSystemVersion": 1
+}
